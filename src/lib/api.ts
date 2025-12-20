@@ -22,19 +22,24 @@ export async function fetchVenues(lat: number, lng: number, radiusKm: number): P
     // Treat 0 km as 500 meters (0.5 km) for very local searches
     const searchRadius = radiusKm === 0 ? 0.5 : radiusKm;
 
+    // Validate inputs
+    if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
+        console.error("Invalid coordinates for venue search:", { lat, lng });
+        return [];
+    }
+
     // Overpass API query to find venues
     // We look for nodes, ways, and relations with specific tags
+    // note: comments inside the query string can sometimes cause issues with parsing if newlines aren't preserved, removing them for safety.
     const query = `
     [out:json][timeout:90];
     (
       node["leisure"~"resort|park|garden|bandstand"](around:${searchRadius * 1000},${lat},${lng});
       way["leisure"~"resort|park|garden|bandstand"](around:${searchRadius * 1000},${lat},${lng});
-      node["tourism"~"hotel|guest_house|hostel"](around:${searchRadius * 1000},${lat},${lng});
-      way["tourism"~"hotel|guest_house|hostel"](around:${searchRadius * 1000},${lat},${lng});
+      node["tourism"~"hotel|guest_house|hostel|resort"](around:${searchRadius * 1000},${lat},${lng});
+      way["tourism"~"hotel|guest_house|hostel|resort"](around:${searchRadius * 1000},${lat},${lng});
       node["amenity"~"events_venue|community_centre|conference_centre|public_building|townhall|hall|marriage_hall|social_facility"](around:${searchRadius * 1000},${lat},${lng});
       way["amenity"~"events_venue|community_centre|conference_centre|public_building|townhall|hall|marriage_hall|social_facility"](around:${searchRadius * 1000},${lat},${lng});
-      
-      // Regex without i flag, manual case handling for common cases
       node["name"~"[Tt][Tt][Dd]|[Kk]alyana|[Mm]andap|[Cc]onvention|[Bb]anquet|[Gg]ardens"](around:${searchRadius * 1000},${lat},${lng});
       way["name"~"[Tt][Tt][Dd]|[Kk]alyana|[Mm]andap|[Cc]onvention|[Bb]anquet|[Gg]ardens"](around:${searchRadius * 1000},${lat},${lng});
     );
@@ -49,6 +54,7 @@ export async function fetchVenues(lat: number, lng: number, radiusKm: number): P
 
         if (!response.ok) {
             const errorText = await response.text();
+            // eslint-disable-next-line no-console
             console.error("Overpass API Error:", errorText);
             throw new Error(`Failed to fetch venues: ${response.status} ${response.statusText}`);
         }
@@ -133,6 +139,69 @@ export async function fetchVenues(lat: number, lng: number, radiusKm: number): P
 
     } catch (error) {
         console.error("Error fetching venues:", error);
+        return [];
+    }
+}
+
+// GOOGLE PLACES API IMPLEMENTATION (For Testing)
+export async function fetchVenuesGoogle(lat: number, lng: number, radiusKm: number): Promise<Venue[]> {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
+    if (!apiKey) {
+        console.warn("Google Places API Key is missing. Add NEXT_PUBLIC_GOOGLE_PLACES_API_KEY to your .env file.");
+        return [];
+    }
+
+    const radiusMeters = radiusKm * 1000;
+    // Using simple Nearby Search
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radiusMeters}&type=point_of_interest&keyword=party+hall|resort|hotel|banquet&key=${apiKey}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            console.error("Google Places API Error:", response.status, response.statusText);
+            return [];
+        }
+        const data = await response.json();
+
+        if (data.status !== "OK" && data.status !== "ZERO_RESULTS") {
+            console.error("Google Places API Status:", data.status, data.error_message);
+            return [];
+        }
+
+        return (data.results || []).map((place: any) => {
+            let type: Venue["type"] = "party_hall";
+            const types = place.types || [];
+            const nameLower = place.name.toLowerCase();
+
+            if (types.includes("lodging") || types.includes("hotel")) type = "hotel";
+            if (nameLower.includes("resort")) type = "resort";
+
+            return {
+                id: `google_${place.place_id}`,
+                name: place.name,
+                type: type,
+                address: place.vicinity || "Address not available",
+                city: "",
+                state: "",
+                country: "",
+                latitude: place.geometry.location.lat,
+                longitude: place.geometry.location.lng,
+                capacity: { min: 0, max: 0 },
+                priceRange: { min: 0, max: 0, currency: "USD" },
+                contact: {
+                    phone: "Not available",
+                    email: "Not available",
+                    website: "Not available"
+                },
+                images: [],
+                amenities: [],
+                rating: place.rating,
+                reviews: place.user_ratings_total
+            };
+        });
+
+    } catch (error) {
+        console.error("Error fetching Google venues:", error);
         return [];
     }
 }

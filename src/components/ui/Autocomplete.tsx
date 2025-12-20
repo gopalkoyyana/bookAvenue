@@ -13,6 +13,7 @@ interface AutocompleteProps {
     label?: string;
     className?: string;       // Custom class for the button/input container
     labelClassName?: string;  // Custom class for the label
+    darkTheme?: boolean;      // New prop for dark mode
 }
 
 export default function Autocomplete({
@@ -24,6 +25,7 @@ export default function Autocomplete({
     label,
     className,
     labelClassName,
+    darkTheme = false,
 }: AutocompleteProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -124,32 +126,39 @@ export default function Autocomplete({
                     }}
                     disabled={disabled}
                     className={cn(
-                        "flex h-9 w-full items-center justify-between rounded-lg border-2 border-gray-200 bg-white px-3 py-2 text-sm",
+                        "flex h-9 w-full items-center justify-between rounded-lg border-2 px-3 py-2 text-sm",
                         "transition-all duration-200",
-                        "focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200",
+                        // Dynamic styles based on theme
+                        darkTheme
+                            ? "bg-transparent border-none text-white focus:ring-0"
+                            : "border-gray-200 bg-white text-gray-900 focus:border-purple-500 focus:ring-purple-200 hover:border-gray-300",
                         "disabled:cursor-not-allowed disabled:opacity-50",
-                        "hover:border-gray-300",
-                        isOpen && "border-purple-500 ring-2 ring-purple-200",
                         className
                     )}
                 >
-                    <span className={cn("truncate", !value && "text-gray-400")}>
+                    <span className={cn("truncate", !value && (darkTheme ? "text-gray-400" : "text-gray-400"))}>
                         {displayValue || placeholder}
                     </span>
                     <ChevronDown
                         className={cn(
-                            "ml-2 h-4 w-4 text-gray-500 transition-transform duration-200",
+                            "ml-2 h-4 w-4 transition-transform duration-200",
+                            darkTheme ? "text-gray-400" : "text-gray-500",
                             isOpen && "rotate-180"
                         )}
                     />
                 </button>
 
                 {isOpen && (
-                    <div className="absolute z-[9999] mt-2 w-full rounded-lg border-2 border-purple-200 bg-white shadow-xl">
+                    <div className={cn(
+                        "absolute z-[9999] mt-2 w-full rounded-lg border shadow-xl",
+                        darkTheme
+                            ? "bg-[#0b1a2c] border-white/10 text-white"
+                            : "bg-white border-purple-200"
+                    )}>
                         {/* Search Input */}
-                        <div className="p-2 border-b border-gray-200">
+                        <div className={cn("p-2 border-b", darkTheme ? "border-white/10" : "border-gray-200")}>
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                <Search className={cn("absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4", darkTheme ? "text-gray-400" : "text-gray-400")} />
                                 <input
                                     ref={inputRef}
                                     type="text"
@@ -157,13 +166,18 @@ export default function Autocomplete({
                                     onChange={handleInputChange}
                                     onKeyDown={handleKeyDown}
                                     placeholder="Type 3+ characters to search..."
-                                    className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-md focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                                    className={cn(
+                                        "w-full pl-10 pr-4 py-2 text-sm rounded-md focus:outline-none focus:ring-2",
+                                        darkTheme
+                                            ? "bg-white/5 border border-white/10 text-white focus:border-brand-blue focus:ring-brand-blue/30 placeholder:text-gray-500"
+                                            : "border border-gray-200 focus:border-purple-500 focus:ring-purple-200"
+                                    )}
                                 />
                             </div>
                         </div>
 
                         {/* Options List */}
-                        <div className="max-h-60 overflow-y-auto p-1">
+                        <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
                             {searchTerm.length > 0 && searchTerm.length < 3 ? (
                                 <div className="px-4 py-3 text-sm text-gray-500 text-center">
                                     Type at least 3 characters to search
@@ -175,8 +189,8 @@ export default function Autocomplete({
                             ) : (
                                 <>
                                     {searchTerm.length < 3 && options.length > 20 && (
-                                        <div className="px-4 py-2 text-xs text-gray-500 bg-purple-50 rounded mb-1">
-                                            Showing first 20 options. Type 3+ characters to search all {options.length} options.
+                                        <div className={cn("px-4 py-2 text-xs rounded mb-1", darkTheme ? "text-gray-400 bg-white/5" : "text-gray-500 bg-purple-50")}>
+                                            Showing first 20 options.
                                         </div>
                                     )}
                                     {filteredOptions.map((option, index) => (
@@ -187,14 +201,15 @@ export default function Autocomplete({
                                             onMouseEnter={() => setHighlightedIndex(index)}
                                             className={cn(
                                                 "w-full flex items-center justify-between px-4 py-2.5 text-sm text-left rounded-md transition-colors",
-                                                "hover:bg-purple-50",
-                                                highlightedIndex === index && "bg-purple-50",
-                                                value === option && "bg-purple-100 font-medium"
+                                                darkTheme
+                                                    ? (highlightedIndex === index ? "bg-brand-blue/20 text-white" : "text-gray-300 hover:bg-white/5")
+                                                    : (highlightedIndex === index ? "bg-purple-50" : "text-gray-900 hover:bg-purple-50"),
+                                                value === option && (darkTheme ? "bg-brand-blue text-white font-medium" : "bg-purple-100 font-medium")
                                             )}
                                         >
                                             <span className="truncate">{option}</span>
                                             {value === option && (
-                                                <Check className="h-4 w-4 text-purple-600 flex-shrink-0 ml-2" />
+                                                <Check className={cn("h-4 w-4 flex-shrink-0 ml-2", darkTheme ? "text-white" : "text-purple-600")} />
                                             )}
                                         </button>
                                     ))}

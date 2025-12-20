@@ -23,6 +23,7 @@ export interface Venue {
         website?: string;
     };
     images: string[];
+    video?: string;
     amenities: string[];
     rating?: number;
     reviews?: number;

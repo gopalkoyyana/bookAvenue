@@ -31,7 +31,7 @@ function LocationMarker({ position, onLocationSelect }: { position: { lat: numbe
     const customIcon = new Icon({
         iconUrl: `data:image/svg+xml;base64,${btoa(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">
-        <path fill="#9333ea" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        <path fill="#2563eb" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
       </svg>
     `)}`,
         iconSize: [40, 40],
@@ -84,7 +84,7 @@ export default function LocationPicker({ latitude, longitude, onLocationSelect }
                 type="button"
                 size="sm"
                 variant="outline"
-                className="absolute top-4 right-4 z-[1000] bg-white text-purple-700 border-purple-200 hover:bg-purple-50 shadow-md"
+                className="absolute top-4 right-4 z-[1000] bg-white text-blue-600 border-blue-200 hover:bg-blue-50 shadow-md"
                 onClick={handleCurrentLocation}
             >
                 <Locate className="w-4 h-4 mr-2" />

@@ -48,12 +48,12 @@ const createCustomIcon = (type: Venue["type"], status?: 'available' | 'booked') 
         color = "#ef4444"; // Red-500
     } else {
         const colors = {
-            party_hall: "#9333ea",
-            hotel: "#4f46e5",
-            resort: "#ec4899",
-            function_hall: "#8b5cf6",
+            party_hall: "#3b82f6", // Blue-500
+            hotel: "#6366f1",      // Indigo-500
+            resort: "#0ea5e9",     // Sky-500
+            function_hall: "#2563eb", // Blue-600
         };
-        color = colors[type] || "#9333ea";
+        color = colors[type] || "#3b82f6";
     }
 
     return new Icon({
@@ -88,9 +88,9 @@ export default function MapComponent({ center, venues, radiusKm, onVenueClick, s
                     center={center}
                     radius={radiusKm * 1000}
                     pathOptions={{
-                        fillColor: "#9333ea",
+                        fillColor: "#3b82f6",
                         fillOpacity: 0.1,
-                        color: "#9333ea",
+                        color: "#3b82f6",
                         weight: 2,
                     }}
                 />
@@ -129,7 +129,7 @@ export default function MapComponent({ center, venues, radiusKm, onVenueClick, s
                                     <div className="p-2">
                                         <h3 className="font-semibold text-sm mb-1">{venue.name}</h3>
                                         <p className="text-xs text-gray-600 mb-1">{venue.address}</p>
-                                        <p className="text-xs font-medium text-purple-600 mb-1">
+                                        <p className="text-xs font-medium text-blue-600 mb-1">
                                             {venue.priceRange.currency} {venue.priceRange.min.toLocaleString()} - {venue.priceRange.max.toLocaleString()}
                                         </p>
                                         {date && (

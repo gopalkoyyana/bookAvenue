@@ -170,41 +170,41 @@ export default function AddVenueForm() {
     return (
         <form onSubmit={handleSubmit} className="space-y-8">
             {/* Role Display */}
-            <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 flex items-center justify-between">
+            <div className="bg-blue-900/20 p-4 rounded-xl border border-blue-500/20 flex items-center justify-between">
                 <div>
-                    <span className="text-xs font-semibold text-purple-600 uppercase tracking-wider">Logged in as</span>
-                    <div className="text-lg font-bold text-purple-900 capitalize">{role}</div>
+                    <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Logged in as</span>
+                    <div className="text-lg font-bold text-blue-100 capitalize">{role}</div>
                 </div>
-                <div className="h-8 w-8 bg-purple-200 rounded-full flex items-center justify-center">
-                    <CheckCircle2 className="w-5 h-5 text-purple-700" />
+                <div className="h-8 w-8 bg-blue-500/20 rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-blue-400" />
                 </div>
             </div>
 
             {/* Basic Info */}
             <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
-                    <Building className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-white">
+                    <Building className="w-5 h-5 text-blue-500" />
                     Venue Details
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Venue Name</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Venue Name</label>
                         <input
                             required
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             placeholder="e.g. Grand Palace Convention Center"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Venue Type</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Venue Type</label>
                         <select
                             name="type"
                             value={formData.type}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                         >
                             <option value="party_hall">Party / Function Hall</option>
                             <option value="hotel">Hotel</option>
@@ -216,58 +216,58 @@ export default function AddVenueForm() {
 
             {/* Location */}
             <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
-                    <MapPin className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-white">
+                    <MapPin className="w-5 h-5 text-blue-500" />
                     Location
                 </h3>
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Address</label>
                         <textarea
                             required
                             name="address"
                             value={formData.address}
                             onChange={handleInputChange}
                             rows={2}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             placeholder="Full street address"
                         />
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-1">City</label>
                             <input
                                 required
                                 name="city"
                                 value={formData.city}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-1">State</label>
                             <input
                                 required
                                 name="state"
                                 value={formData.state}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-1">ZIP Code</label>
                             <input
                                 name="zip"
                                 value={formData.zip}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             />
                         </div>
                     </div>
 
                     {/* Map Location Picker */}
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Pin Location on Map</label>
+                    <div className="mt-4 pt-4 border-t border-gray-800">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">Pin Location on Map</label>
                         <p className="text-xs text-gray-500 mb-3">Click on the map or click &quot;Use My Location&quot; to set the details.</p>
                         <LocationPicker
                             latitude={formData.latitude}
@@ -277,11 +277,11 @@ export default function AddVenueForm() {
                         <div className="grid grid-cols-2 gap-4 mt-2">
                             <div>
                                 <label className="text-xs text-gray-500">Latitude</label>
-                                <div className="text-sm font-mono bg-gray-50 px-3 py-1.5 rounded text-gray-600">{formData.latitude?.toFixed(6)}</div>
+                                <div className="text-sm font-mono bg-gray-800 px-3 py-1.5 rounded text-gray-300">{formData.latitude?.toFixed(6)}</div>
                             </div>
                             <div>
                                 <label className="text-xs text-gray-500">Longitude</label>
-                                <div className="text-sm font-mono bg-gray-50 px-3 py-1.5 rounded text-gray-600">{formData.longitude?.toFixed(6)}</div>
+                                <div className="text-sm font-mono bg-gray-800 px-3 py-1.5 rounded text-gray-300">{formData.longitude?.toFixed(6)}</div>
                             </div>
                         </div>
                     </div>
@@ -290,13 +290,13 @@ export default function AddVenueForm() {
 
             {/* Capacity & Pricing */}
             <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
-                    <Users className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-white">
+                    <Users className="w-5 h-5 text-blue-500" />
                     Capacity & Pricing
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
-                        <label className="block text-sm font-medium text-gray-700">Guest Capacity</label>
+                        <label className="block text-sm font-medium text-gray-300">Guest Capacity</label>
                         <div className="flex gap-4">
                             <input
                                 type="number"
@@ -304,7 +304,7 @@ export default function AddVenueForm() {
                                 placeholder="Min"
                                 value={formData.capacityMin}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
                             />
                             <input
                                 type="number"
@@ -312,12 +312,12 @@ export default function AddVenueForm() {
                                 placeholder="Max"
                                 value={formData.capacityMax}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
                             />
                         </div>
                     </div>
                     <div className="space-y-4">
-                        <label className="block text-sm font-medium text-gray-700">Price Range (₹)</label>
+                        <label className="block text-sm font-medium text-gray-300">Price Range (₹)</label>
                         <div className="flex gap-4">
                             <input
                                 type="number"
@@ -325,7 +325,7 @@ export default function AddVenueForm() {
                                 placeholder="Min Price"
                                 value={formData.priceMin}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
                             />
                             <input
                                 type="number"
@@ -333,7 +333,7 @@ export default function AddVenueForm() {
                                 placeholder="Max Price"
                                 value={formData.priceMax}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
                             />
                         </div>
                     </div>
@@ -342,20 +342,20 @@ export default function AddVenueForm() {
 
             {/* Amenities */}
             <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
-                    <CheckCircle2 className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-white">
+                    <CheckCircle2 className="w-5 h-5 text-blue-600" />
                     Amenities
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {amenitiesList.map((amenity) => (
-                        <label key={amenity} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg border border-gray-100 hover:bg-gray-50">
+                        <label key={amenity} className="flex items-center gap-2 cursor-pointer p-2 rounded-lg border border-gray-700 hover:bg-gray-800 transition-colors">
                             <input
                                 type="checkbox"
                                 checked={formData.amenities.includes(amenity)}
                                 onChange={() => toggleAmenity(amenity)}
-                                className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
+                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 bg-gray-700 border-gray-600"
                             />
-                            <span className="text-sm text-gray-700">{amenity}</span>
+                            <span className="text-sm text-gray-300">{amenity}</span>
                         </label>
                     ))}
                 </div>
@@ -363,45 +363,45 @@ export default function AddVenueForm() {
 
             {/* Contact */}
             <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
-                    <Phone className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-white">
+                    <Phone className="w-5 h-5 text-blue-600" />
                     Contact Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
                         <input
                             required
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 outline-none"
                             placeholder="+91 98765 43210"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
                         <input
                             required
                             type="email"
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 outline-none"
                             placeholder="contact@venue.com"
                         />
                     </div>
                     <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Website (Optional)</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Website (Optional)</label>
                         <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Globe className="w-4 h-4 text-gray-400" />
+                                <Globe className="w-4 h-4 text-gray-500" />
                             </div>
                             <input
                                 name="website"
                                 value={formData.website}
                                 onChange={handleInputChange}
-                                className="w-full pl-10 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-500 hover:border-purple-300 transition-colors"
+                                className="w-full pl-10 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 hover:border-blue-500/50 transition-colors outline-none"
                                 placeholder="https://www.example.com"
                             />
                         </div>
@@ -412,41 +412,41 @@ export default function AddVenueForm() {
             {/* Media Upload */}
             <div className="space-y-6">
                 <div>
-                    <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800 mb-4">
-                        <ImageIcon className="w-5 h-5 text-purple-600" />
+                    <h3 className="text-lg font-semibold flex items-center gap-2 text-white mb-4">
+                        <ImageIcon className="w-5 h-5 text-blue-600" />
                         Photos & Video
                     </h3>
 
                     {/* Photos Section */}
                     <div className="mb-6">
                         <div className="flex items-center justify-between mb-2">
-                            <label className="block text-sm font-medium text-gray-700">Photos (Max 5)</label>
+                            <label className="block text-sm font-medium text-gray-300">Photos (Max 5)</label>
                             <span className="text-xs text-gray-500">{media.photos.length}/5 uploaded</span>
                         </div>
 
                         {media.photos.length === 0 ? (
                             <div
                                 onClick={() => hiddenPhotoInput.current?.click()}
-                                className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-purple-400 transition-colors cursor-pointer bg-gray-50"
+                                className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-blue-500 transition-colors cursor-pointer bg-gray-800/50"
                             >
-                                <Upload className="w-10 h-10 text-gray-400 mx-auto mb-3" />
-                                <p className="text-sm text-gray-600 font-medium">Click to upload venue photos</p>
-                                <p className="text-xs text-gray-400 mt-1">First photo will be the cover image by default</p>
+                                <Upload className="w-10 h-10 text-gray-500 mx-auto mb-3" />
+                                <p className="text-sm text-gray-300 font-medium">Click to upload venue photos</p>
+                                <p className="text-xs text-gray-500 mt-1">First photo will be the cover image by default</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                                 {media.photos.map((photo, index) => (
-                                    <div key={index} className={`relative aspect-square rounded-lg overflow-hidden border-2 group ${media.coverIndex === index ? 'border-purple-600 ring-2 ring-purple-100' : 'border-gray-200'}`}>
+                                    <div key={index} className={`relative aspect-square rounded-lg overflow-hidden border-2 group ${media.coverIndex === index ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-700'}`}>
                                         <img
                                             src={URL.createObjectURL(photo)}
                                             alt={`Preview ${index}`}
                                             className="w-full h-full object-cover"
                                         />
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
                                             <button
                                                 type="button"
                                                 onClick={() => setCoverPhoto(index)}
-                                                className={`p-1.5 rounded-full ${media.coverIndex === index ? 'bg-yellow-400 text-white' : 'bg-white text-gray-600 hover:text-yellow-500'}`}
+                                                className={`p-1.5 rounded-full ${media.coverIndex === index ? 'bg-yellow-400 text-white' : 'bg-gray-800 text-gray-300 hover:text-yellow-400'}`}
                                                 title="Set as Cover"
                                             >
                                                 <Star className={`w-4 h-4 ${media.coverIndex === index ? 'fill-current' : ''}`} />
@@ -454,14 +454,14 @@ export default function AddVenueForm() {
                                             <button
                                                 type="button"
                                                 onClick={() => removePhoto(index)}
-                                                className="p-1.5 rounded-full bg-white text-red-500 hover:bg-red-50"
+                                                className="p-1.5 rounded-full bg-gray-800 text-red-500 hover:bg-red-500/20"
                                                 title="Remove"
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>
                                         {media.coverIndex === index && (
-                                            <div className="absolute top-1 left-1 px-2 py-0.5 bg-purple-600 text-white text-[10px] font-bold rounded shadow-sm">
+                                            <div className="absolute top-1 left-1 px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded shadow-sm">
                                                 COVER
                                             </div>
                                         )}
@@ -470,9 +470,9 @@ export default function AddVenueForm() {
                                 {media.photos.length < 5 && (
                                     <div
                                         onClick={() => hiddenPhotoInput.current?.click()}
-                                        className="aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 hover:border-purple-300 transition-colors"
+                                        className="aspect-square rounded-lg border-2 border-dashed border-gray-700 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-800 hover:border-blue-400 transition-colors bg-gray-800/30"
                                     >
-                                        <Upload className="w-6 h-6 text-gray-400 mb-1" />
+                                        <Upload className="w-6 h-6 text-gray-500 mb-1" />
                                         <span className="text-xs text-gray-500">Add More</span>
                                     </div>
                                 )}
@@ -490,31 +490,31 @@ export default function AddVenueForm() {
 
                     {/* Video Section */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Video (Max 1)</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">Video (Max 1)</label>
                         {!media.video ? (
                             <div
                                 onClick={() => hiddenVideoInput.current?.click()}
-                                className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-purple-400 transition-colors cursor-pointer bg-gray-50 flex flex-col items-center"
+                                className="border-2 border-dashed border-gray-700 rounded-xl p-6 text-center hover:border-blue-500 transition-colors cursor-pointer bg-gray-800/50 flex flex-col items-center"
                             >
-                                <Film className="w-8 h-8 text-indigo-400 mb-2" />
-                                <p className="text-sm text-gray-600 font-medium">Upload a video tour</p>
-                                <p className="text-xs text-gray-400 mt-1">Max 10 seconds • Max 50MB</p>
+                                <Film className="w-8 h-8 text-blue-400 mb-2" />
+                                <p className="text-sm text-gray-300 font-medium">Upload a video tour</p>
+                                <p className="text-xs text-gray-500 mt-1">Max 10 seconds • Max 50MB</p>
                             </div>
                         ) : (
-                            <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl border border-purple-100">
+                            <div className="flex items-center justify-between p-4 bg-gray-800 rounded-xl border border-gray-700">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-purple-100 rounded-lg">
-                                        <Film className="w-6 h-6 text-purple-600" />
+                                    <div className="p-2 bg-gray-700 rounded-lg">
+                                        <Film className="w-6 h-6 text-blue-400" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium text-gray-800 truncate max-w-[200px]">{media.video.name}</p>
-                                        <p className="text-xs text-gray-500">{(media.video.size / (1024 * 1024)).toFixed(2)} MB</p>
+                                        <p className="text-sm font-medium text-white truncate max-w-[200px]">{media.video.name}</p>
+                                        <p className="text-xs text-gray-400">{(media.video.size / (1024 * 1024)).toFixed(2)} MB</p>
                                     </div>
                                 </div>
                                 <button
                                     type="button"
                                     onClick={() => setMedia(prev => ({ ...prev, video: null }))}
-                                    className="p-2 hover:bg-white rounded-full text-gray-500 hover:text-red-500 transition-colors"
+                                    className="p-2 hover:bg-gray-700 rounded-full text-gray-500 hover:text-red-500 transition-colors"
                                 >
                                     <X className="w-5 h-5" />
                                 </button>
@@ -531,13 +531,13 @@ export default function AddVenueForm() {
                 </div>
             </div>
 
-            <div className="pt-6 flex flex-col-reverse md:flex-row items-center gap-4 justify-between border-t border-gray-100 mt-8">
+            <div className="pt-6 flex flex-col-reverse md:flex-row items-center gap-4 justify-between border-t border-gray-800 mt-8">
                 {/* Back Button */}
                 <Button
                     type="button"
                     variant="ghost"
                     onClick={handleBack}
-                    className="w-full md:w-auto text-gray-500 hover:text-gray-900"
+                    className="w-full md:w-auto text-gray-400 hover:text-white hover:bg-gray-800"
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back
@@ -549,7 +549,7 @@ export default function AddVenueForm() {
                         type="button"
                         variant="ghost"
                         onClick={handleReset}
-                        className="w-full md:w-auto text-gray-500 hover:text-red-600 hover:bg-red-50"
+                        className="w-full md:w-auto text-gray-400 hover:text-red-400 hover:bg-red-900/10"
                     >
                         <RotateCcw className="w-4 h-4 mr-2" />
                         Reset
@@ -560,7 +560,7 @@ export default function AddVenueForm() {
                         type="button"
                         variant="outline"
                         onClick={handleCancel}
-                        className="w-full md:w-auto border-gray-200 text-gray-700 hover:bg-gray-50"
+                        className="w-full md:w-auto border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
                     >
                         <X className="w-4 h-4 mr-2" />
                         Cancel

@@ -15,11 +15,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                     "disabled:pointer-events-none disabled:opacity-50",
                     {
-                        "bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 shadow-lg hover:shadow-xl":
+                        "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl shadow-blue-900/20":
                             variant === "default",
-                        "border-2 border-purple-600 text-purple-600 hover:bg-purple-50":
+                        "border border-blue-600 text-blue-500 hover:bg-blue-500/10":
                             variant === "outline",
-                        "hover:bg-gray-100 text-gray-700": variant === "ghost",
+                        "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300": variant === "ghost",
                     },
                     {
                         "h-10 px-6 py-2": size === "default",
