@@ -133,11 +133,10 @@ export default function SearchForm() {
                         />
                     </div>
 
-                    {/* Search Button */}
                     <div className="p-2 md:pl-2">
                         <Button
                             onClick={handleSearch}
-                            disabled={!city}
+                            disabled={!country && !state && !city}
                             className="w-full md:w-auto h-14 md:h-14 px-8 rounded-xl bg-brand-blue hover:bg-brand-blue-hover text-white font-bold text-lg shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/40 hover:scale-[1.02] transition-all flex items-center justify-center min-w-[140px] border border-blue-400/20"
                         >
                             <Search className="w-5 h-5 mr-2" />

@@ -86,14 +86,14 @@ function SearchResults() {
             // 2. Fetch Venues from Overpass API based on coordinates
             // Only fetch if we have a city selected or valid coords
             if (city || coordsFound) {
+                // Filter mock venues for the current city FIRST
+                const relevantMockVenues = mockVenues.filter(venue =>
+                    venue.city.toLowerCase() === (city || "").toLowerCase()
+                );
+
                 try {
                     console.log(`Fetching venues for ${lat}, ${lng} radius ${radiusKm}km`);
                     const apiVenues = await fetchVenues(lat, lng, radiusKm);
-
-                    // Filter mock venues for the current city
-                    const relevantMockVenues = mockVenues.filter(venue =>
-                        venue.city.toLowerCase() === (city || "").toLowerCase()
-                    );
 
                     // Merge mock venues and API venues
                     setVenues([...relevantMockVenues, ...apiVenues]);
@@ -105,16 +105,13 @@ function SearchResults() {
                         const { fetchVenuesGoogle } = await import("@/lib/api");
                         const googleVenues = await fetchVenuesGoogle(lat, lng, radiusKm);
 
-                        // Filter mock venues for the current city (re-using logic)
-                        const relevantMockVenues = mockVenues.filter(venue =>
-                            venue.city.toLowerCase() === (city || "").toLowerCase()
-                        );
-
                         // Merge mock venues and Google venues
                         setVenues([...relevantMockVenues, ...googleVenues]);
                     } catch (googleError) {
                         console.error("Error fetching Google venues:", googleError);
-                        setVenues([]);
+                        // Even if both APIs fail, show mock venues if available
+                        console.log(`Showing ${relevantMockVenues.length} mock venues for ${city}`);
+                        setVenues(relevantMockVenues);
                     }
                 } finally {
                     setIsLoading(false);
