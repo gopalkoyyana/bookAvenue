@@ -58,13 +58,14 @@ export async function fetchVenues(lat: number, lng: number, radiusKm: number): P
 
     // Simplified and optimized Overpass API query
     // Focusing on most common venue types to reduce query complexity
+    // Focused tag-based query only — Google Places handles name-based search
     const query = `
-    [out:json][timeout:25];
+    [out:json][timeout:30];
     (
-      node["amenity"~"events_venue|community_centre|conference_centre|townhall"](around:${searchRadius * 1000},${lat},${lng});
-      way["amenity"~"events_venue|community_centre|conference_centre|townhall"](around:${searchRadius * 1000},${lat},${lng});
-      node["tourism"~"hotel|resort"](around:${searchRadius * 1000},${lat},${lng});
-      way["tourism"~"hotel|resort"](around:${searchRadius * 1000},${lat},${lng});
+      node["amenity"~"events_venue|community_centre|conference_centre|townhall|hall|marriage_hall|banquet_hall"](around:${searchRadius * 1000},${lat},${lng});
+      way["amenity"~"events_venue|community_centre|conference_centre|townhall|hall|marriage_hall|banquet_hall"](around:${searchRadius * 1000},${lat},${lng});
+      node["tourism"~"hotel|resort|guest_house"](around:${searchRadius * 1000},${lat},${lng});
+      way["tourism"~"hotel|resort|guest_house"](around:${searchRadius * 1000},${lat},${lng});
       node["leisure"~"resort"](around:${searchRadius * 1000},${lat},${lng});
       way["leisure"~"resort"](around:${searchRadius * 1000},${lat},${lng});
     );
@@ -85,7 +86,7 @@ export async function fetchVenues(lat: number, lng: number, radiusKm: number): P
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
-            }, 15000); // 15 second timeout
+            }, 30000); // 30 second timeout to match query timeout
 
             if (!response.ok) {
                 const errorText = await response.text();
@@ -122,6 +123,7 @@ export async function fetchVenues(lat: number, lng: number, radiusKm: number): P
                 if (nameLower.includes("resort") || nameLower.includes("retreat")) type = "resort";
                 if (nameLower.includes("convention") || nameLower.includes("banquet") || nameLower.includes("palace")) type = "party_hall";
                 if (nameLower.includes("mandap") || nameLower.includes("kalyana") || nameLower.includes("gardens")) type = "party_hall";
+                if (nameLower.includes("function") || nameLower.includes("marriage") || nameLower.includes("hall")) type = "party_hall";
 
                 // Determine address
                 const address = [
@@ -190,38 +192,54 @@ export async function fetchVenues(lat: number, lng: number, radiusKm: number): P
     throw lastError || new Error("Failed to fetch venues from all Overpass API endpoints");
 }
 
-// GOOGLE PLACES API IMPLEMENTATION (For Testing)
+// GOOGLE PLACES API IMPLEMENTATION
+// Calls through a server-side Next.js proxy to avoid CORS issues with direct browser requests
 export async function fetchVenuesGoogle(lat: number, lng: number, radiusKm: number): Promise<Venue[]> {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
-    if (!apiKey) {
-        console.warn("Google Places API Key is missing. Add NEXT_PUBLIC_GOOGLE_PLACES_API_KEY to your .env file.");
-        return [];
-    }
-
     const radiusMeters = radiusKm * 1000;
-    // Using simple Nearby Search
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radiusMeters}&type=point_of_interest&keyword=party+hall|resort|hotel|banquet&key=${apiKey}`;
 
     try {
-        const response = await fetch(url);
+        // Call our local API route which proxies the request server-side
+        const proxyUrl = `/api/places?lat=${lat}&lng=${lng}&radius=${radiusMeters}`;
+        const response = await fetch(proxyUrl);
+
         if (!response.ok) {
-            console.error("Google Places API Error:", response.status, response.statusText);
+            console.error("Google Places Proxy Error:", response.status, response.statusText);
             return [];
         }
+
         const data = await response.json();
+
+        if (data.status === "NO_API_KEY") {
+            console.warn("Google Places API Key is missing or not configured in .env.local");
+            return [];
+        }
 
         if (data.status !== "OK" && data.status !== "ZERO_RESULTS") {
             console.error("Google Places API Status:", data.status, data.error_message);
             return [];
         }
 
-        return (data.results || []).map((place: any) => {
+        return (data.results || []).map((place: {
+            place_id: string;
+            name: string;
+            types: string[];
+            vicinity: string;
+            geometry: { location: { lat: number; lng: number } };
+            rating?: number;
+            user_ratings_total?: number;
+            photos?: string[];
+            phone?: string;
+            website?: string;
+            googleMapsUri?: string;
+            openingHours?: string[];
+        }) => {
             let type: Venue["type"] = "party_hall";
             const types = place.types || [];
             const nameLower = place.name.toLowerCase();
 
             if (types.includes("lodging") || types.includes("hotel")) type = "hotel";
             if (nameLower.includes("resort")) type = "resort";
+            if (nameLower.includes("hall") || nameLower.includes("mandap") || nameLower.includes("kalyana") || nameLower.includes("banquet") || nameLower.includes("function") || nameLower.includes("marriage")) type = "party_hall";
 
             return {
                 id: `google_${place.place_id}`,
@@ -234,21 +252,24 @@ export async function fetchVenuesGoogle(lat: number, lng: number, radiusKm: numb
                 latitude: place.geometry.location.lat,
                 longitude: place.geometry.location.lng,
                 capacity: { min: 0, max: 0 },
-                priceRange: { min: 0, max: 0, currency: "USD" },
+                priceRange: { min: 0, max: 0, currency: "INR" },
                 contact: {
-                    phone: "Not available",
-                    email: "Not available",
-                    website: "Not available"
+                    phone: place.phone || "Not available",
+                    email: "Not available", // Not provided by Google Places API
+                    website: place.website || place.googleMapsUri || undefined,
                 },
-                images: [],
-                amenities: [],
+                images: place.photos || [],
+                amenities: place.openingHours
+                    ? [`Hours: ${place.openingHours[0]?.split(": ")[1] || "See Google Maps"}`]
+                    : [],
                 rating: place.rating,
                 reviews: place.user_ratings_total
             };
         });
 
     } catch (error) {
-        console.error("Error fetching Google venues:", error);
+        console.error("Error fetching Google venues via proxy:", error);
         return [];
     }
 }
+

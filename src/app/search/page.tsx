@@ -92,27 +92,30 @@ function SearchResults() {
                 );
 
                 try {
-                    console.log(`Fetching venues for ${lat}, ${lng} radius ${radiusKm}km`);
-                    const apiVenues = await fetchVenues(lat, lng, radiusKm);
+                    console.log(`Fetching venues for ${lat}, ${lng} radius ${radiusKm}km via Google Places...`);
 
-                    // Merge mock venues and API venues
-                    setVenues([...relevantMockVenues, ...apiVenues]);
-                } catch (error) {
-                    console.error("Overpass fetching venues:", error);
-                    // Fallback to Google Places API
-                    try {
-                        console.log("Attempting fallback to Google Places API...");
-                        const { fetchVenuesGoogle } = await import("@/lib/api");
-                        const googleVenues = await fetchVenuesGoogle(lat, lng, radiusKm);
+                    // Google Places API handles comprehensive venue discovery for all cities
+                    // (function halls, marriage halls, kalyana mandapams, banquet halls, hotels, resorts)
+                    const { fetchVenuesGoogle } = await import("@/lib/api");
+                    const googleVenues = await fetchVenuesGoogle(lat, lng, radiusKm);
 
-                        // Merge mock venues and Google venues
-                        setVenues([...relevantMockVenues, ...googleVenues]);
-                    } catch (googleError) {
-                        console.error("Error fetching Google venues:", googleError);
-                        // Even if both APIs fail, show mock venues if available
-                        console.log(`Showing ${relevantMockVenues.length} mock venues for ${city}`);
-                        setVenues(relevantMockVenues);
+                    // Deduplicate by normalized name (in case mockVenues overlap)
+                    const uniqueVenues: Venue[] = [];
+                    const seenNames = new Set<string>();
+
+                    for (const venue of googleVenues) {
+                        const normalizedName = venue.name.toLowerCase().replace(/[^a-z0-9]/g, "");
+                        if (!seenNames.has(normalizedName)) {
+                            seenNames.add(normalizedName);
+                            uniqueVenues.push(venue);
+                        }
                     }
+
+                    // Merge mock venues (if any for this city) with Google Places results
+                    setVenues([...relevantMockVenues, ...uniqueVenues]);
+                } catch (error) {
+                    console.error("Error fetching venues:", error);
+                    setVenues(relevantMockVenues);
                 } finally {
                     setIsLoading(false);
                 }

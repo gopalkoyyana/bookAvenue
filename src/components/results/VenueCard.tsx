@@ -2,7 +2,7 @@
 
 import { Venue } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
-import { MapPin, Users, Phone, Mail, Star, Building2, Hotel, PartyPopper, Home, Plus } from "lucide-react";
+import { MapPin, Users, Phone, Mail, Star, Building2, Hotel, PartyPopper, Home, Camera, Globe, Navigation } from "lucide-react";
 import Image from "next/image";
 import { checkAvailability } from "@/lib/mockData";
 import { useState } from "react";
@@ -81,13 +81,16 @@ export default function VenueCard({ venue, onClick, date }: VenueCardProps) {
                         )}
 
                         {/* Gallery Trigger Button */}
-                        <div
-                            onClick={handleGalleryOpen}
-                            className="absolute bottom-3 right-3 bg-black/60 hover:bg-blue-600 hover:text-white backdrop-blur-sm w-8 h-8 rounded-full flex items-center justify-center border border-white/20 transition-colors z-10 shadow-lg group-hover:scale-110"
-                            title="View Photos & Video"
-                        >
-                            <Plus className="w-5 h-5 text-white" />
-                        </div>
+                        {venue.images && venue.images.length > 0 && (
+                            <div
+                                onClick={handleGalleryOpen}
+                                className="absolute bottom-3 right-3 bg-black/70 hover:bg-blue-600 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1.5 border border-white/20 transition-all z-10 shadow-lg group-hover:scale-105 cursor-pointer"
+                                title={`View ${venue.images.length} Photos`}
+                            >
+                                <Camera className="w-3.5 h-3.5 text-white" />
+                                <span className="text-white text-xs font-medium">{venue.images.length}</span>
+                            </div>
+                        )}
                     </div>
 
                     {/* Details Section */}
