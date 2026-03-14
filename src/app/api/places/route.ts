@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
         try {
             const body = JSON.stringify({
                 textQuery: term,
-                locationBias: {
+                locationRestriction: {
                     circle: {
                         center: { latitude: parseFloat(lat), longitude: parseFloat(lng) },
                         radius: parseFloat(radius)

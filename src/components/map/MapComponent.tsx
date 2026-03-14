@@ -19,7 +19,7 @@ interface MapComponentProps {
 }
 
 // Component to handle map center updates and venue selection
-function MapUpdater({ center, selectedVenue }: { center: LatLngExpression, selectedVenue?: Venue | null }) {
+function MapUpdater({ center, selectedVenue, radiusKm }: { center: LatLngExpression, selectedVenue?: Venue | null, radiusKm: number }) {
     const map = useMap();
 
     // Unified effect to handle map view updates
@@ -29,11 +29,16 @@ function MapUpdater({ center, selectedVenue }: { center: LatLngExpression, selec
                 duration: 1.5
             });
         } else {
-            map.flyTo(center, 12, {
+            // Dynamic zoom based on radius
+            // radius 5km -> zoom 13
+            // radius 1km -> zoom 15
+            // radius 50km -> zoom 10
+            const zoom = Math.floor(13 - Math.log2(radiusKm / 5));
+            map.flyTo(center, zoom, {
                 duration: 1.5
             });
         }
-    }, [center, selectedVenue, map]);
+    }, [center, selectedVenue, radiusKm, map]);
 
     return null;
 }
@@ -76,7 +81,7 @@ export default function MapComponent({ center, venues, radiusKm, onVenueClick, s
             className="h-full w-full rounded-xl"
             scrollWheelZoom={true}
         >
-            <MapUpdater center={center} selectedVenue={selectedVenue} />
+            <MapUpdater center={center} selectedVenue={selectedVenue} radiusKm={radiusKm} />
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
