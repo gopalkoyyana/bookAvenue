@@ -146,21 +146,35 @@ export default function VenueCard({ venue, onClick, date }: VenueCardProps) {
                         {/* Contact Info */}
                         <div className="flex flex-wrap gap-3 text-sm mb-4">
                             {venue.contact.phone && venue.contact.phone !== "Not available" && (
-                                <div className="flex items-center gap-1 text-gray-400">
+                                <a 
+                                    href={`tel:${venue.contact.phone.replace(/[^0-9+]/g, '')}`}
+                                    className="flex items-center gap-1 text-gray-400 hover:text-blue-400 transition-colors"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
                                     <Phone className="w-4 h-4 text-blue-500" />
                                     <span>{venue.contact.phone}</span>
-                                </div>
-                            )}
-                            {venue.contact.email && venue.contact.email !== "Not available" && (
-                                <div className="flex items-center gap-1 text-gray-400">
-                                    <Mail className="w-4 h-4 text-blue-500" />
-                                    <span className="truncate max-w-[200px]">{venue.contact.email}</span>
-                                </div>
+                                </a>
                             )}
                             {venue.contact.website && (
-                                <div className="flex items-center gap-1 text-gray-400">
-                                    <span className="text-blue-400 text-xs border border-blue-500/30 px-1.5 py-0.5 rounded cursor-pointer hover:bg-blue-500/10">Website</span>
-                                </div>
+                                <a 
+                                    href={venue.contact.website.startsWith('http') ? venue.contact.website : `https://${venue.contact.website}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 text-gray-400 hover:text-blue-400 transition-colors"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {venue.contact.website.includes('maps.google.com') ? (
+                                        <>
+                                            <Navigation className="w-4 h-4 text-green-500" />
+                                            <span className="text-blue-400 text-xs border border-blue-500/30 px-1.5 py-0.5 rounded hover:bg-blue-500/10">Directions</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Globe className="w-4 h-4 text-blue-500" />
+                                            <span className="text-blue-400 text-xs border border-blue-500/30 px-1.5 py-0.5 rounded hover:bg-blue-500/10">Website</span>
+                                        </>
+                                    )}
+                                </a>
                             )}
                         </div>
 

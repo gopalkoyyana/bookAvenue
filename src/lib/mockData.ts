@@ -14,6 +14,7 @@ export const mockVenues: Venue[] = [
         capacity: { min: 100, max: 500 },
         priceRange: { min: 50000, max: 150000, currency: "INR" },
         contact: {
+            phone: "+91 9876543210",
             email: "info@grandpalace.com",
             website: "https://grandpalace.com"
         },
