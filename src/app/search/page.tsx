@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useState, useMemo, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { cityCoordinates, mockVenues } from "@/lib/mockData";
+import { cityCoordinates } from "@/lib/mockData";
 import { Venue } from "@/lib/types";
 import { fetchVenues } from "@/lib/api";
 import VenueCard from "@/components/results/VenueCard";
@@ -83,44 +83,30 @@ function SearchResults() {
                 }
             }
 
-            // 2. Fetch Venues from Overpass API based on coordinates
-            // Only fetch if we have a city selected or valid coords
+            // 2. Fetch Venues from API based on coordinates
             if (city || coordsFound) {
-                // Filter mock venues for the current city FIRST
-                const relevantMockVenues = mockVenues.filter(venue =>
-                    venue.city.toLowerCase() === (city || "").toLowerCase()
-                );
-
                 try {
                     console.log(`Fetching venues for ${lat}, ${lng} radius ${radiusKm}km via Google Places...`);
 
-                    // Google Places API handles comprehensive venue discovery for all cities
-                    // (function halls, marriage halls, kalyana mandapams, banquet halls, hotels, resorts)
                     const { fetchVenuesGoogle } = await import("@/lib/api");
                     const googleVenues = await fetchVenuesGoogle(lat, lng, radiusKm);
 
-                    // Deduplicate by normalized name (across both mock and google data)
-                    const combinedVenues = [...relevantMockVenues, ...googleVenues];
+                    // Final deduplication by normalized name (just in case API returns overlaps)
                     const uniqueVenues: Venue[] = [];
                     const seenNames = new Set<string>();
 
-                    for (const venue of combinedVenues) {
+                    for (const venue of googleVenues) {
                         const normalizedName = venue.name.toLowerCase().replace(/[^a-z0-9]/g, "");
                         if (!seenNames.has(normalizedName)) {
                             seenNames.add(normalizedName);
                             uniqueVenues.push(venue);
-                        } else {
-                            // If it's a duplicate, we prefer the one that might have more data
-                            // (e.g. mock data often has specific capacity/price)
-                            // But for now, we just skip the duplicate
-                            console.log(`[Deduplicator] Skipping duplicate: ${venue.name}`);
                         }
                     }
 
                     setVenues(uniqueVenues);
                 } catch (error) {
                     console.error("Error fetching venues:", error);
-                    setVenues(relevantMockVenues);
+                    setVenues([]);
                 } finally {
                     setIsLoading(false);
                 }
