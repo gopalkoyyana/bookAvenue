@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense, useState, useMemo, useEffect } from "react";
+import { Suspense, useState, useMemo, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { cityCoordinates } from "@/lib/mockData";
 import { Venue } from "@/lib/types";
@@ -29,6 +29,7 @@ function SearchResults() {
     const [selectedType, setSelectedType] = useState<string>(typeParam || "all");
     const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
     const [viewMode, setViewMode] = useState<"split" | "map" | "list">("split");
+    const listContainerRef = useRef<HTMLDivElement>(null);
 
     // State for venues and loading
     const [venues, setVenues] = useState<Venue[]>([]);
@@ -39,6 +40,21 @@ function SearchResults() {
         if (selectedType === "all") return venues;
         return venues.filter(venue => venue.type === selectedType);
     }, [venues, selectedType]);
+
+    // Sorting venues to show selected one at the top
+    const displayVenues = useMemo(() => {
+        if (!selectedVenue) return filteredVenues;
+        const others = filteredVenues.filter(v => v.id !== selectedVenue.id);
+        const selected = filteredVenues.find(v => v.id === selectedVenue.id);
+        return selected ? [selected, ...others] : filteredVenues;
+    }, [filteredVenues, selectedVenue]);
+
+    // Scroll to top when selection changes
+    useEffect(() => {
+        if (selectedVenue && listContainerRef.current) {
+            listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [selectedVenue]);
 
     // Map center state
     const [mapCenter, setMapCenter] = useState<[number, number]>([17.385, 78.4867]); // Default Hyderabad
@@ -324,7 +340,10 @@ function SearchResults() {
 
                     {/* Venues List Section */}
                     {(viewMode === "split" || viewMode === "list") && (
-                        <div className={`${viewMode === "split" ? "lg:w-1/2" : "w-full"} overflow-y-auto custom-scrollbar`}>
+                        <div 
+                            ref={listContainerRef}
+                            className={`${viewMode === "split" ? "lg:w-1/2" : "w-full"} overflow-y-auto custom-scrollbar scroll-smooth`}
+                        >
                             <div className="space-y-4">
                                 {isLoading ? (
                                     <div className="flex flex-col items-center justify-center py-20">
@@ -337,10 +356,11 @@ function SearchResults() {
                                         <p className="text-gray-500 text-sm mt-2">Try adjusting filters or increasing the radius.</p>
                                     </div>
                                 ) : (
-                                    filteredVenues.map((venue) => (
+                                    displayVenues.map((venue) => (
                                         <VenueCard
                                             key={venue.id}
                                             venue={venue}
+                                            isSelected={selectedVenue?.id === venue.id}
                                             onClick={() => setSelectedVenue(venue)}
                                             date={searchParams.get("date") || undefined}
                                         />

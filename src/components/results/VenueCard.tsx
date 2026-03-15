@@ -7,6 +7,7 @@ import Image from "next/image";
 import { checkAvailability } from "@/lib/mockData";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
 
 const MediaGalleryModal = dynamic(() => import("@/components/ui/MediaGalleryModal"), { ssr: false });
 
@@ -14,6 +15,7 @@ interface VenueCardProps {
     venue: Venue;
     onClick?: () => void;
     date?: string;
+    isSelected?: boolean;
 }
 
 const typeIcons = {
@@ -30,7 +32,7 @@ const typeLabels = {
     function_hall: "Party / Function Hall",
 };
 
-export default function VenueCard({ venue, onClick, date }: VenueCardProps) {
+export default function VenueCard({ venue, onClick, date, isSelected }: VenueCardProps) {
     const [showGallery, setShowGallery] = useState(false);
     const TypeIcon = typeIcons[venue.type];
     const isAvailable = date ? checkAvailability(venue.id, date) : undefined;
@@ -43,7 +45,12 @@ export default function VenueCard({ venue, onClick, date }: VenueCardProps) {
     return (
         <>
             <Card
-                className="overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gray-900 border-gray-800"
+                className={cn(
+                    "overflow-hidden cursor-pointer transition-all duration-500 bg-gray-900 border-gray-800",
+                    isSelected 
+                        ? "ring-2 ring-blue-500 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)] translate-x-2 z-10" 
+                        : "hover:shadow-xl hover:-translate-y-1"
+                )}
                 onClick={onClick}
             >
                 <div className="flex flex-col md:flex-row">
