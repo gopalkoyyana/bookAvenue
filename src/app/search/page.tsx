@@ -99,20 +99,25 @@ function SearchResults() {
                     const { fetchVenuesGoogle } = await import("@/lib/api");
                     const googleVenues = await fetchVenuesGoogle(lat, lng, radiusKm);
 
-                    // Deduplicate by normalized name (in case mockVenues overlap)
+                    // Deduplicate by normalized name (across both mock and google data)
+                    const combinedVenues = [...relevantMockVenues, ...googleVenues];
                     const uniqueVenues: Venue[] = [];
                     const seenNames = new Set<string>();
 
-                    for (const venue of googleVenues) {
+                    for (const venue of combinedVenues) {
                         const normalizedName = venue.name.toLowerCase().replace(/[^a-z0-9]/g, "");
                         if (!seenNames.has(normalizedName)) {
                             seenNames.add(normalizedName);
                             uniqueVenues.push(venue);
+                        } else {
+                            // If it's a duplicate, we prefer the one that might have more data
+                            // (e.g. mock data often has specific capacity/price)
+                            // But for now, we just skip the duplicate
+                            console.log(`[Deduplicator] Skipping duplicate: ${venue.name}`);
                         }
                     }
 
-                    // Merge mock venues (if any for this city) with Google Places results
-                    setVenues([...relevantMockVenues, ...uniqueVenues]);
+                    setVenues(uniqueVenues);
                 } catch (error) {
                     console.error("Error fetching venues:", error);
                     setVenues(relevantMockVenues);
