@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
         return new NextResponse("Missing ref parameter", { status: 400 });
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY?.trim();
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY?.trim();
     if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
         return new NextResponse("API key not configured", { status: 503 });
     }

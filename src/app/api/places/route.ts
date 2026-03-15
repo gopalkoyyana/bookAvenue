@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "Missing required parameters: lat, lng, radius" }, { status: 400 });
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY?.trim();
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY?.trim();
     if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
         return NextResponse.json({ results: [], status: "NO_API_KEY" });
     }
