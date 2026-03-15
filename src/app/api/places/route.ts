@@ -1,5 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Helper to calculate distance between two points in meters
+function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+    const R = 6371e3; // Earth's radius in meters
+    const phi1 = (lat1 * Math.PI) / 180;
+    const phi2 = (lat2 * Math.PI) / 180;
+    const dPhi = ((lat2 - lat1) * Math.PI) / 180;
+    const dLambda = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a = Math.sin(dPhi / 2) * Math.sin(dPhi / 2) +
+        Math.cos(phi1) * Math.cos(phi2) *
+        Math.sin(dLambda / 2) * Math.sin(dLambda / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+}
+
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const lat = searchParams.get("lat");
@@ -46,7 +62,7 @@ export async function GET(request: NextRequest) {
         try {
             const body = JSON.stringify({
                 textQuery: term,
-                locationRestriction: {
+                locationBias: {
                     circle: {
                         center: { latitude: parseFloat(lat), longitude: parseFloat(lng) },
                         radius: parseFloat(radius)
@@ -94,6 +110,16 @@ export async function GET(request: NextRequest) {
             console.log(`[Places API] "${term}": ${places.length} results`);
 
             for (const place of places) {
+                // Strictly enforce radius manually since locationRestriction doesn't support circle
+                const placeLat = place.location?.latitude;
+                const placeLng = place.location?.longitude;
+                if (placeLat && placeLng) {
+                    const dist = getDistance(parseFloat(lat), parseFloat(lng), placeLat, placeLng);
+                    if (dist > parseFloat(radius) + 1000) { // Allow 1km buffer for edge cases
+                        continue;
+                    }
+                }
+
                 if (!seenIds.has(place.id)) {
                     seenIds.add(place.id);
 
