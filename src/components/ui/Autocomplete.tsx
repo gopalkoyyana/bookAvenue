@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown, Search } from "lucide-react";
 
@@ -33,14 +33,22 @@ export default function Autocomplete({
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Filter options based on search term
-    // Only filter if search term has 3+ characters, otherwise show limited results
-    const safeOptions = Array.isArray(options) ? options : [];
-    const filteredOptions = searchTerm.length >= 3
-        ? safeOptions.filter((option) =>
-            option && option.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        : safeOptions.slice(0, 20); // Show only first 20 options if no search term
+    // Unified options including custom typed value
+    const filteredOptions = useMemo(() => {
+        const safeOptions = Array.isArray(options) ? options : [];
+        let results = searchTerm.length >= 3
+            ? safeOptions.filter((option) =>
+                option && option.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            : safeOptions.slice(0, 20);
+
+        // If user typed something that isn't in results, offer to use it
+        const isMatch = safeOptions.some(opt => opt.toLowerCase() === searchTerm.toLowerCase());
+        if (searchTerm.length >= 2 && !isMatch) {
+            results = [`USE_CUSTOM:${searchTerm}`, ...results];
+        }
+        return results;
+    }, [searchTerm, options]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -91,7 +99,10 @@ export default function Autocomplete({
     };
 
     const handleSelect = (option: string) => {
-        onChange(option);
+        const finalValue = option.startsWith("USE_CUSTOM:") 
+            ? option.replace("USE_CUSTOM:", "") 
+            : option;
+        onChange(finalValue);
         setIsOpen(false);
         setSearchTerm("");
         setHighlightedIndex(0);
@@ -188,31 +199,37 @@ export default function Autocomplete({
                                 </div>
                             ) : (
                                 <>
-                                    {searchTerm.length < 3 && options.length > 20 && (
-                                        <div className={cn("px-4 py-2 text-xs rounded mb-1", darkTheme ? "text-gray-400 bg-white/5" : "text-gray-500 bg-purple-50")}>
-                                            Showing first 20 options.
-                                        </div>
-                                    )}
-                                    {filteredOptions.map((option, index) => (
-                                        <button
-                                            key={option}
-                                            type="button"
-                                            onClick={() => handleSelect(option)}
-                                            onMouseEnter={() => setHighlightedIndex(index)}
-                                            className={cn(
-                                                "w-full flex items-center justify-between px-4 py-2.5 text-sm text-left rounded-md transition-colors",
-                                                darkTheme
-                                                    ? (highlightedIndex === index ? "bg-brand-blue/20 text-white" : "text-gray-300 hover:bg-white/5")
-                                                    : (highlightedIndex === index ? "bg-purple-50" : "text-gray-900 hover:bg-purple-50"),
-                                                value === option && (darkTheme ? "bg-brand-blue text-white font-medium" : "bg-purple-100 font-medium")
-                                            )}
-                                        >
-                                            <span className="truncate">{option}</span>
-                                            {value === option && (
-                                                <Check className={cn("h-4 w-4 flex-shrink-0 ml-2", darkTheme ? "text-white" : "text-purple-600")} />
-                                            )}
-                                        </button>
-                                    ))}
+                                    {filteredOptions.map((option, index) => {
+                                        const isCustom = option.startsWith("USE_CUSTOM:");
+                                        const label = isCustom ? option.replace("USE_CUSTOM:", "") : option;
+
+                                        return (
+                                            <button
+                                                key={option}
+                                                type="button"
+                                                onClick={() => handleSelect(option)}
+                                                onMouseEnter={() => setHighlightedIndex(index)}
+                                                className={cn(
+                                                    "w-full flex items-center justify-between px-4 py-2.5 text-sm text-left rounded-md transition-colors",
+                                                    isCustom && "mb-1 border-b border-white/5 pb-3",
+                                                    darkTheme
+                                                        ? (highlightedIndex === index ? "bg-brand-blue/20 text-white" : "text-gray-300 hover:bg-white/5")
+                                                        : (highlightedIndex === index ? "bg-purple-50" : "text-gray-900 hover:bg-purple-50"),
+                                                    value === label && (darkTheme ? "bg-brand-blue text-white font-medium" : "bg-purple-100 font-medium")
+                                                )}
+                                            >
+                                                <div className="flex flex-col">
+                                                    <span className={cn("truncate", isCustom && "font-bold text-blue-400")}>
+                                                        {isCustom ? `Use "${label}"` : label}
+                                                    </span>
+                                                    {isCustom && <span className="text-[10px] opacity-60">Search for this custom location</span>}
+                                                </div>
+                                                {(value === label || isCustom) && (
+                                                    isCustom ? <Search className="h-3 w-3 opacity-50" /> : <Check className={cn("h-4 w-4 flex-shrink-0 ml-2", darkTheme ? "text-white" : "text-purple-600")} />
+                                                )}
+                                            </button>
+                                        );
+                                    })}
                                 </>
                             )}
                         </div>

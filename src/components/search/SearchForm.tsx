@@ -119,16 +119,16 @@ export default function SearchForm() {
                         />
                     </div>
 
-                    {/* City Input */}
+                    {/* City/Area Input */}
                     <div className="relative flex-1 p-2 hover:bg-white/5 transition-colors group">
                         <Autocomplete
-                            label="City"
+                            label="City, Area or Street"
                             labelClassName="text-blue-200 font-bold text-xs uppercase tracking-wider mb-1 block pl-1 group-hover:text-white transition-colors"
                             className="bg-transparent border-none text-white focus:ring-0 px-1 h-8 font-bold text-lg placeholder:text-blue-300/50 w-full"
                             options={availableCities}
                             value={city}
                             onChange={setCity}
-                            placeholder="Select City"
+                            placeholder="e.g. MG Road, Banjara Hills"
                             darkTheme={true}
                         />
                     </div>
